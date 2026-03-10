@@ -1,0 +1,1251 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="description" content="ShieAsh — Interactive User Profile: Skills, Goals & Experiences 2024–2026" />
+  <title>ShieAsh · Profile</title>
+
+  <style>
+    /* ─── Reset & Base ─────────────────────────────────────── */
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --bg:           #0a0d14;
+      --surface:      rgba(255,255,255,0.05);
+      --surface-hi:   rgba(255,255,255,0.09);
+      --border:       rgba(255,255,255,0.10);
+      --accent:       #7c3aed;
+      --accent2:      #06b6d4;
+      --accent3:      #f59e0b;
+      --text:         #e2e8f0;
+      --text-muted:   #94a3b8;
+      --radius:       16px;
+      --trans:        0.35s cubic-bezier(.4,0,.2,1);
+    }
+
+    html { scroll-behavior: smooth; }
+
+    body {
+      font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      min-height: 100vh;
+      overflow-x: hidden;
+    }
+
+    /* ─── Canvas Background ─────────────────────────────────── */
+    #bg-canvas {
+      position: fixed;
+      inset: 0;
+      z-index: 0;
+      pointer-events: none;
+    }
+
+    /* ─── Layout ─────────────────────────────────────────────── */
+    .page-wrap {
+      position: relative;
+      z-index: 1;
+      max-width: 980px;
+      margin: 0 auto;
+      padding: 0 20px 80px;
+    }
+
+    /* ─── Nav ─────────────────────────────────────────────────── */
+    nav {
+      position: sticky;
+      top: 0;
+      z-index: 100;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 14px 28px;
+      background: rgba(10,13,20,0.78);
+      backdrop-filter: blur(18px);
+      border-bottom: 1px solid var(--border);
+    }
+
+    .nav-brand {
+      font-size: 1.15rem;
+      font-weight: 700;
+      background: linear-gradient(90deg, var(--accent), var(--accent2));
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+      letter-spacing: 1px;
+    }
+
+    .nav-links {
+      display: flex;
+      gap: 24px;
+      list-style: none;
+    }
+
+    .nav-links a {
+      color: var(--text-muted);
+      text-decoration: none;
+      font-size: .875rem;
+      font-weight: 500;
+      transition: color var(--trans);
+    }
+    .nav-links a:hover { color: var(--text); }
+
+    /* ─── Hero ─────────────────────────────────────────────────── */
+    .hero {
+      display: flex;
+      align-items: center;
+      gap: 48px;
+      padding: 80px 0 60px;
+      flex-wrap: wrap;
+    }
+
+    .avatar-ring {
+      position: relative;
+      width: 160px;
+      height: 160px;
+      flex-shrink: 0;
+    }
+
+    .avatar-ring::before {
+      content: '';
+      position: absolute;
+      inset: -4px;
+      border-radius: 50%;
+      background: conic-gradient(var(--accent), var(--accent2), var(--accent3), var(--accent));
+      animation: spin 6s linear infinite;
+    }
+
+    @keyframes spin { to { transform: rotate(360deg); } }
+
+    .avatar-inner {
+      position: absolute;
+      inset: 4px;
+      border-radius: 50%;
+      background: linear-gradient(135deg, #1e1b4b, #0c4a6e);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 3.5rem;
+      user-select: none;
+    }
+
+    .hero-text h1 {
+      font-size: clamp(2rem, 5vw, 3rem);
+      font-weight: 800;
+      line-height: 1.1;
+    }
+
+    .hero-text h1 span {
+      background: linear-gradient(90deg, var(--accent), var(--accent2));
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
+
+    .hero-tagline {
+      margin-top: 10px;
+      color: var(--text-muted);
+      font-size: 1.05rem;
+    }
+
+    .badge-row {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      margin-top: 18px;
+    }
+
+    .badge {
+      padding: 5px 14px;
+      border-radius: 999px;
+      font-size: .78rem;
+      font-weight: 600;
+      letter-spacing: .5px;
+      border: 1px solid var(--border);
+      background: var(--surface);
+      color: var(--text-muted);
+      cursor: default;
+      transition: all var(--trans);
+    }
+    .badge:hover {
+      background: var(--accent);
+      color: #fff;
+      border-color: var(--accent);
+    }
+
+    .hero-actions {
+      display: flex;
+      gap: 12px;
+      margin-top: 24px;
+      flex-wrap: wrap;
+    }
+
+    .btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      padding: 10px 22px;
+      border-radius: 10px;
+      font-size: .9rem;
+      font-weight: 600;
+      cursor: pointer;
+      border: none;
+      transition: all var(--trans);
+      text-decoration: none;
+    }
+
+    .btn-primary {
+      background: var(--accent);
+      color: #fff;
+    }
+    .btn-primary:hover {
+      background: #6d28d9;
+      transform: translateY(-2px);
+      box-shadow: 0 8px 20px rgba(124,58,237,.45);
+    }
+
+    .btn-outline {
+      background: transparent;
+      color: var(--text);
+      border: 1px solid var(--border);
+    }
+    .btn-outline:hover {
+      background: var(--surface-hi);
+      transform: translateY(-2px);
+    }
+
+    /* ─── Section Titles ─────────────────────────────────────── */
+    .section-label {
+      font-size: .72rem;
+      font-weight: 700;
+      letter-spacing: 2.5px;
+      text-transform: uppercase;
+      color: var(--accent2);
+      margin-bottom: 6px;
+    }
+
+    h2.section-title {
+      font-size: clamp(1.5rem, 3vw, 2rem);
+      font-weight: 800;
+      margin-bottom: 32px;
+    }
+
+    /* ─── Cards / Glass ──────────────────────────────────────── */
+    .glass {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      backdrop-filter: blur(12px);
+      transition: all var(--trans);
+    }
+    .glass:hover {
+      background: var(--surface-hi);
+      border-color: rgba(255,255,255,0.16);
+      transform: translateY(-3px);
+    }
+
+    /* ─── DNA / Unique Profile Section ──────────────────────── */
+    #profile {
+      padding: 60px 0;
+    }
+
+    .profile-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+      gap: 20px;
+    }
+
+    .profile-card {
+      padding: 24px;
+    }
+
+    .profile-card .card-icon {
+      font-size: 2rem;
+      margin-bottom: 14px;
+    }
+
+    .profile-card h3 {
+      font-size: 1rem;
+      font-weight: 700;
+      margin-bottom: 8px;
+    }
+
+    .profile-card p {
+      font-size: .875rem;
+      color: var(--text-muted);
+      line-height: 1.65;
+    }
+
+    /* Stat bar */
+    .stat-list { list-style: none; margin-top: 10px; display: flex; flex-direction: column; gap: 10px; }
+    .stat-item label { display: flex; justify-content: space-between; font-size: .78rem; color: var(--text-muted); margin-bottom: 4px; }
+    .stat-bar { height: 6px; border-radius: 999px; background: rgba(255,255,255,0.08); overflow: hidden; }
+    .stat-bar-fill {
+      height: 100%;
+      border-radius: 999px;
+      background: linear-gradient(90deg, var(--accent), var(--accent2));
+      width: 0;
+      transition: width 1.2s cubic-bezier(.4,0,.2,1);
+    }
+
+    /* ─── Skills ─────────────────────────────────────────────── */
+    #skills { padding: 60px 0; }
+
+    .skills-tabs {
+      display: flex;
+      gap: 8px;
+      flex-wrap: wrap;
+      margin-bottom: 28px;
+    }
+
+    .tab-btn {
+      padding: 8px 18px;
+      border-radius: 8px;
+      border: 1px solid var(--border);
+      background: var(--surface);
+      color: var(--text-muted);
+      cursor: pointer;
+      font-size: .85rem;
+      font-weight: 600;
+      transition: all var(--trans);
+    }
+    .tab-btn.active, .tab-btn:hover {
+      background: var(--accent);
+      color: #fff;
+      border-color: var(--accent);
+    }
+
+    .tab-panel { display: none; }
+    .tab-panel.active { display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 16px; }
+
+    .skill-card {
+      padding: 20px;
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+    }
+
+    .skill-head {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .skill-icon {
+      width: 40px;
+      height: 40px;
+      border-radius: 10px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1.3rem;
+      flex-shrink: 0;
+    }
+
+    .skill-name { font-weight: 700; font-size: .95rem; }
+    .skill-level { font-size: .75rem; color: var(--text-muted); }
+
+    .skill-proof {
+      font-size: .75rem;
+      color: var(--accent2);
+      text-decoration: none;
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
+      border: 1px solid rgba(6,182,212,.3);
+      border-radius: 6px;
+      padding: 3px 10px;
+      width: fit-content;
+      transition: all var(--trans);
+    }
+    .skill-proof:hover {
+      background: rgba(6,182,212,.12);
+      border-color: var(--accent2);
+    }
+
+    /* ─── Goals ──────────────────────────────────────────────── */
+    #goals { padding: 60px 0; }
+
+    .goals-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+      gap: 20px;
+    }
+
+    .goal-card {
+      padding: 24px;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .goal-card::before {
+      content: '';
+      position: absolute;
+      top: 0; left: 0;
+      width: 100%;
+      height: 3px;
+      border-radius: 999px 999px 0 0;
+    }
+    .goal-card.g1::before { background: linear-gradient(90deg, var(--accent), var(--accent2)); }
+    .goal-card.g2::before { background: linear-gradient(90deg, var(--accent2), var(--accent3)); }
+    .goal-card.g3::before { background: linear-gradient(90deg, var(--accent3), var(--accent)); }
+    .goal-card.g4::before { background: linear-gradient(90deg, #10b981, var(--accent2)); }
+
+    .goal-emoji { font-size: 2rem; margin-bottom: 12px; }
+    .goal-title { font-weight: 700; font-size: 1rem; margin-bottom: 8px; }
+    .goal-desc { font-size: .85rem; color: var(--text-muted); line-height: 1.6; margin-bottom: 14px; }
+
+    .goal-progress {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      font-size: .78rem;
+      color: var(--text-muted);
+    }
+
+    .goal-bar { flex: 1; height: 5px; border-radius: 999px; background: rgba(255,255,255,0.08); overflow: hidden; }
+    .goal-bar-fill {
+      height: 100%;
+      border-radius: 999px;
+      width: 0;
+      transition: width 1.4s cubic-bezier(.4,0,.2,1);
+    }
+    .g1 .goal-bar-fill { background: linear-gradient(90deg, var(--accent), var(--accent2)); }
+    .g2 .goal-bar-fill { background: linear-gradient(90deg, var(--accent2), var(--accent3)); }
+    .g3 .goal-bar-fill { background: linear-gradient(90deg, var(--accent3), var(--accent)); }
+    .g4 .goal-bar-fill { background: linear-gradient(90deg, #10b981, var(--accent2)); }
+
+    /* ─── Experience Timeline ────────────────────────────────── */
+    #experience { padding: 60px 0; }
+
+    .timeline {
+      position: relative;
+      padding-left: 32px;
+    }
+
+    .timeline::before {
+      content: '';
+      position: absolute;
+      left: 8px;
+      top: 0; bottom: 0;
+      width: 2px;
+      background: linear-gradient(to bottom, var(--accent), var(--accent2), var(--accent3));
+      border-radius: 999px;
+    }
+
+    .tl-item {
+      position: relative;
+      margin-bottom: 36px;
+      opacity: 0;
+      transform: translateX(-16px);
+      transition: opacity .6s ease, transform .6s ease;
+    }
+    .tl-item.visible { opacity: 1; transform: translateX(0); }
+
+    .tl-dot {
+      position: absolute;
+      left: -28px;
+      top: 6px;
+      width: 16px;
+      height: 16px;
+      border-radius: 50%;
+      border: 2px solid var(--accent);
+      background: var(--bg);
+      z-index: 1;
+    }
+    .tl-dot.active { background: var(--accent); box-shadow: 0 0 12px var(--accent); }
+
+    .tl-card {
+      padding: 20px 24px;
+    }
+
+    .tl-meta {
+      display: flex;
+      gap: 10px;
+      align-items: center;
+      flex-wrap: wrap;
+      margin-bottom: 8px;
+    }
+
+    .tl-date {
+      font-size: .75rem;
+      font-weight: 700;
+      color: var(--accent2);
+      letter-spacing: .5px;
+      background: rgba(6,182,212,.1);
+      border: 1px solid rgba(6,182,212,.25);
+      border-radius: 6px;
+      padding: 2px 10px;
+    }
+
+    .tl-tag {
+      font-size: .72rem;
+      color: var(--text-muted);
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 6px;
+      padding: 2px 8px;
+    }
+
+    .tl-title { font-size: 1rem; font-weight: 700; margin-bottom: 6px; }
+    .tl-desc { font-size: .875rem; color: var(--text-muted); line-height: 1.65; }
+
+    .tl-proof {
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
+      margin-top: 10px;
+      font-size: .75rem;
+      color: var(--accent3);
+      border: 1px solid rgba(245,158,11,.3);
+      border-radius: 6px;
+      padding: 3px 10px;
+      text-decoration: none;
+      transition: all var(--trans);
+    }
+    .tl-proof:hover { background: rgba(245,158,11,.1); border-color: var(--accent3); }
+
+    /* ─── Contact / Footer Strip ─────────────────────────────── */
+    #contact {
+      padding: 60px 0 20px;
+      text-align: center;
+    }
+
+    .contact-links {
+      display: flex;
+      justify-content: center;
+      gap: 16px;
+      flex-wrap: wrap;
+      margin-top: 28px;
+    }
+
+    .contact-btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      padding: 12px 24px;
+      border-radius: 12px;
+      border: 1px solid var(--border);
+      background: var(--surface);
+      color: var(--text);
+      text-decoration: none;
+      font-size: .875rem;
+      font-weight: 600;
+      transition: all var(--trans);
+    }
+    .contact-btn:hover {
+      background: var(--surface-hi);
+      transform: translateY(-3px);
+      box-shadow: 0 8px 20px rgba(0,0,0,.3);
+    }
+
+    footer {
+      text-align: center;
+      padding: 28px 0 0;
+      color: var(--text-muted);
+      font-size: .8rem;
+      border-top: 1px solid var(--border);
+      margin-top: 40px;
+    }
+
+    /* ─── Tooltip ─────────────────────────────────────────────── */
+    [data-tip] { position: relative; cursor: help; }
+    [data-tip]::after {
+      content: attr(data-tip);
+      position: absolute;
+      bottom: calc(100% + 8px);
+      left: 50%;
+      transform: translateX(-50%) scale(.9);
+      background: #1e1b4b;
+      color: var(--text);
+      font-size: .75rem;
+      padding: 6px 12px;
+      border-radius: 8px;
+      white-space: nowrap;
+      pointer-events: none;
+      opacity: 0;
+      transition: all .2s ease;
+      border: 1px solid var(--border);
+      z-index: 99;
+    }
+    [data-tip]:hover::after { opacity: 1; transform: translateX(-50%) scale(1); }
+
+    /* ─── Scroll Reveal ───────────────────────────────────────── */
+    .reveal {
+      opacity: 0;
+      transform: translateY(24px);
+      transition: opacity .7s ease, transform .7s ease;
+    }
+    .reveal.visible { opacity: 1; transform: translateY(0); }
+
+    /* ─── Responsive ──────────────────────────────────────────── */
+    @media (max-width: 600px) {
+      .hero { flex-direction: column; align-items: flex-start; padding-top: 48px; }
+      .nav-links { display: none; }
+      .avatar-ring { width: 120px; height: 120px; }
+      .avatar-inner { font-size: 2.6rem; }
+    }
+
+    /* ─── Cursor Glow ─────────────────────────────────────────── */
+    .cursor-glow {
+      position: fixed;
+      width: 320px;
+      height: 320px;
+      border-radius: 50%;
+      pointer-events: none;
+      background: radial-gradient(circle, rgba(124,58,237,.12) 0%, transparent 70%);
+      transform: translate(-50%, -50%);
+      transition: left .12s ease, top .12s ease;
+      z-index: 0;
+    }
+  </style>
+</head>
+<body>
+
+<!-- Animated particle canvas -->
+<canvas id="bg-canvas" aria-hidden="true"></canvas>
+
+<!-- Cursor glow -->
+<div class="cursor-glow" id="cursor-glow" aria-hidden="true"></div>
+
+<!-- ─── Navigation ─────────────────────────────────────── -->
+<nav role="navigation" aria-label="Main navigation">
+  <span class="nav-brand">⟨ ShieAsh /⟩</span>
+  <ul class="nav-links">
+    <li><a href="#profile">Profile</a></li>
+    <li><a href="#skills">Skills</a></li>
+    <li><a href="#goals">Goals</a></li>
+    <li><a href="#experience">Experience</a></li>
+    <li><a href="#contact">Contact</a></li>
+  </ul>
+</nav>
+
+<div class="page-wrap">
+
+  <!-- ─── Hero ─────────────────────────────────────────── -->
+  <header class="hero" role="banner">
+    <div class="avatar-ring" aria-hidden="true">
+      <div class="avatar-inner">🦅</div>
+    </div>
+
+    <div class="hero-text">
+      <p class="section-label">User Profile</p>
+      <h1>Hi, I'm <span>ShieAsh</span></h1>
+      <p class="hero-tagline">Full-Stack Developer · UI/UX Enthusiast · Open-Source Contributor</p>
+
+      <div class="badge-row" role="list" aria-label="Traits">
+        <span class="badge" role="listitem" data-tip="Night owl coder 🦉">Night Coder</span>
+        <span class="badge" role="listitem" data-tip="Learns by building">Project-Driven</span>
+        <span class="badge" role="listitem" data-tip="Always iterating">Iterative Thinker</span>
+        <span class="badge" role="listitem" data-tip="Strong on HCI">UX-First</span>
+        <span class="badge" role="listitem" data-tip="Open-source advocate">OSS Lover</span>
+      </div>
+
+      <div class="hero-actions">
+        <a href="#experience" class="btn btn-primary">📅 My Journey</a>
+        <a href="#contact" class="btn btn-outline">💬 Get in Touch</a>
+      </div>
+    </div>
+  </header>
+
+  <!-- ─── Unique Profile Section ───────────────────────── -->
+  <section id="profile" aria-labelledby="profile-heading">
+    <p class="section-label reveal">Who I Am</p>
+    <h2 class="section-title reveal" id="profile-heading">Unusual Profile Snapshot</h2>
+
+    <div class="profile-grid">
+
+      <article class="glass profile-card reveal" aria-label="Cognitive Style">
+        <div class="card-icon">🧠</div>
+        <h3>Cognitive Style</h3>
+        <p>System-2 thinker who maps problems as graphs before touching the keyboard. Slow to start, relentless to finish.</p>
+        <ul class="stat-list" aria-label="Thinking traits">
+          <li class="stat-item">
+            <label><span>Analytical Depth</span><span>92%</span></label>
+            <div class="stat-bar"><div class="stat-bar-fill" data-value="92"></div></div>
+          </li>
+          <li class="stat-item">
+            <label><span>Creative Leaps</span><span>78%</span></label>
+            <div class="stat-bar"><div class="stat-bar-fill" data-value="78"></div></div>
+          </li>
+          <li class="stat-item">
+            <label><span>Execution Speed</span><span>85%</span></label>
+            <div class="stat-bar"><div class="stat-bar-fill" data-value="85"></div></div>
+          </li>
+        </ul>
+      </article>
+
+      <article class="glass profile-card reveal" aria-label="Work Habits">
+        <div class="card-icon">⚡</div>
+        <h3>Work Habits</h3>
+        <p>Thrives in deep-focus blocks (90 min sprints). Uses the <em>Pomodoro</em> variant with longer rest cycles. Best hours: 9 PM – 2 AM.</p>
+        <ul class="stat-list" aria-label="Work style traits">
+          <li class="stat-item">
+            <label><span>Focus Duration</span><span>90 min</span></label>
+            <div class="stat-bar"><div class="stat-bar-fill" data-value="88"></div></div>
+          </li>
+          <li class="stat-item">
+            <label><span>Async Preference</span><span>High</span></label>
+            <div class="stat-bar"><div class="stat-bar-fill" data-value="80"></div></div>
+          </li>
+          <li class="stat-item">
+            <label><span>Documentation</span><span>Consistent</span></label>
+            <div class="stat-bar"><div class="stat-bar-fill" data-value="75"></div></div>
+          </li>
+        </ul>
+      </article>
+
+      <article class="glass profile-card reveal" aria-label="Motivation Drivers">
+        <div class="card-icon">🌱</div>
+        <h3>Motivation Drivers</h3>
+        <p>Driven by tangible impact — shipping features used by real people, not just hitting metrics. Curiosity > Comfort Zone.</p>
+        <ul class="stat-list" aria-label="Motivation traits">
+          <li class="stat-item">
+            <label><span>Impact Motivation</span><span>95%</span></label>
+            <div class="stat-bar"><div class="stat-bar-fill" data-value="95"></div></div>
+          </li>
+          <li class="stat-item">
+            <label><span>Self-Direction</span><span>90%</span></label>
+            <div class="stat-bar"><div class="stat-bar-fill" data-value="90"></div></div>
+          </li>
+          <li class="stat-item">
+            <label><span>Collaboration</span><span>82%</span></label>
+            <div class="stat-bar"><div class="stat-bar-fill" data-value="82"></div></div>
+          </li>
+        </ul>
+      </article>
+
+      <article class="glass profile-card reveal" aria-label="Communication Style">
+        <div class="card-icon">💬</div>
+        <h3>Communication Style</h3>
+        <p>Prefers written async comms with diagrams over long meetings. Markdown-first. GitHub Issues over Slack DMs.</p>
+        <ul class="stat-list" aria-label="Comms traits">
+          <li class="stat-item">
+            <label><span>Written Clarity</span><span>91%</span></label>
+            <div class="stat-bar"><div class="stat-bar-fill" data-value="91"></div></div>
+          </li>
+          <li class="stat-item">
+            <label><span>Visual Comms</span><span>88%</span></label>
+            <div class="stat-bar"><div class="stat-bar-fill" data-value="88"></div></div>
+          </li>
+          <li class="stat-item">
+            <label><span>Public Speaking</span><span>65%</span></label>
+            <div class="stat-bar"><div class="stat-bar-fill" data-value="65"></div></div>
+          </li>
+        </ul>
+      </article>
+
+    </div>
+  </section>
+
+  <!-- ─── Skills ───────────────────────────────────────── -->
+  <section id="skills" aria-labelledby="skills-heading">
+    <p class="section-label reveal">What I Do</p>
+    <h2 class="section-title reveal" id="skills-heading">Skills &amp; Proof</h2>
+
+    <div class="skills-tabs reveal" role="tablist" aria-label="Skill categories">
+      <button class="tab-btn active" role="tab" aria-selected="true"  aria-controls="tab-frontend"  id="tb-frontend"  onclick="switchTab('frontend')">Frontend</button>
+      <button class="tab-btn"        role="tab" aria-selected="false" aria-controls="tab-backend"   id="tb-backend"   onclick="switchTab('backend')">Backend</button>
+      <button class="tab-btn"        role="tab" aria-selected="false" aria-controls="tab-design"    id="tb-design"    onclick="switchTab('design')">Design</button>
+      <button class="tab-btn"        role="tab" aria-selected="false" aria-controls="tab-tools"     id="tb-tools"     onclick="switchTab('tools')">Tools &amp; DevOps</button>
+    </div>
+
+    <!-- Frontend -->
+    <div class="tab-panel active" id="tab-frontend" role="tabpanel" aria-labelledby="tb-frontend">
+      <article class="glass skill-card reveal">
+        <div class="skill-head">
+          <div class="skill-icon" style="background:rgba(245,158,11,.15)">⚛️</div>
+          <div>
+            <div class="skill-name">React / Next.js</div>
+            <div class="skill-level">Advanced · 3 yrs</div>
+          </div>
+        </div>
+        <div class="stat-bar"><div class="stat-bar-fill" data-value="90"></div></div>
+        <a href="https://github.com/ShieAsh" class="skill-proof" target="_blank" rel="noopener noreferrer">🔗 GitHub Projects</a>
+      </article>
+
+      <article class="glass skill-card reveal">
+        <div class="skill-head">
+          <div class="skill-icon" style="background:rgba(6,182,212,.15)">🎨</div>
+          <div>
+            <div class="skill-name">CSS / Tailwind</div>
+            <div class="skill-level">Advanced · 4 yrs</div>
+          </div>
+        </div>
+        <div class="stat-bar"><div class="stat-bar-fill" data-value="92"></div></div>
+        <a href="https://github.com/ShieAsh" class="skill-proof" target="_blank" rel="noopener noreferrer">🔗 CSS Portfolio</a>
+      </article>
+
+      <article class="glass skill-card reveal">
+        <div class="skill-head">
+          <div class="skill-icon" style="background:rgba(124,58,237,.15)">📱</div>
+          <div>
+            <div class="skill-name">Responsive Design</div>
+            <div class="skill-level">Expert · 4 yrs</div>
+          </div>
+        </div>
+        <div class="stat-bar"><div class="stat-bar-fill" data-value="95"></div></div>
+        <a href="https://github.com/ShieAsh" class="skill-proof" target="_blank" rel="noopener noreferrer">🔗 Live Projects</a>
+      </article>
+
+      <article class="glass skill-card reveal">
+        <div class="skill-head">
+          <div class="skill-icon" style="background:rgba(16,185,129,.15)">🖱️</div>
+          <div>
+            <div class="skill-name">Accessibility (a11y)</div>
+            <div class="skill-level">Intermediate · 2 yrs</div>
+          </div>
+        </div>
+        <div class="stat-bar"><div class="stat-bar-fill" data-value="78"></div></div>
+        <a href="https://github.com/ShieAsh" class="skill-proof" target="_blank" rel="noopener noreferrer">🔗 ARIA Commits</a>
+      </article>
+    </div>
+
+    <!-- Backend -->
+    <div class="tab-panel" id="tab-backend" role="tabpanel" aria-labelledby="tb-backend">
+      <article class="glass skill-card reveal">
+        <div class="skill-head">
+          <div class="skill-icon" style="background:rgba(16,185,129,.15)">🟢</div>
+          <div>
+            <div class="skill-name">Node.js / Express</div>
+            <div class="skill-level">Advanced · 3 yrs</div>
+          </div>
+        </div>
+        <div class="stat-bar"><div class="stat-bar-fill" data-value="88"></div></div>
+        <a href="https://github.com/ShieAsh" class="skill-proof" target="_blank" rel="noopener noreferrer">🔗 API Repos</a>
+      </article>
+
+      <article class="glass skill-card reveal">
+        <div class="skill-head">
+          <div class="skill-icon" style="background:rgba(245,158,11,.15)">🐍</div>
+          <div>
+            <div class="skill-name">Python / FastAPI</div>
+            <div class="skill-level">Intermediate · 2 yrs</div>
+          </div>
+        </div>
+        <div class="stat-bar"><div class="stat-bar-fill" data-value="75"></div></div>
+        <a href="https://github.com/ShieAsh" class="skill-proof" target="_blank" rel="noopener noreferrer">🔗 Python Projects</a>
+      </article>
+
+      <article class="glass skill-card reveal">
+        <div class="skill-head">
+          <div class="skill-icon" style="background:rgba(124,58,237,.15)">🗄️</div>
+          <div>
+            <div class="skill-name">PostgreSQL / MongoDB</div>
+            <div class="skill-level">Intermediate · 2 yrs</div>
+          </div>
+        </div>
+        <div class="stat-bar"><div class="stat-bar-fill" data-value="72"></div></div>
+        <a href="https://github.com/ShieAsh" class="skill-proof" target="_blank" rel="noopener noreferrer">🔗 DB Schemas</a>
+      </article>
+    </div>
+
+    <!-- Design -->
+    <div class="tab-panel" id="tab-design" role="tabpanel" aria-labelledby="tb-design">
+      <article class="glass skill-card reveal">
+        <div class="skill-head">
+          <div class="skill-icon" style="background:rgba(245,158,11,.15)">🎭</div>
+          <div>
+            <div class="skill-name">Figma</div>
+            <div class="skill-level">Advanced · 3 yrs</div>
+          </div>
+        </div>
+        <div class="stat-bar"><div class="stat-bar-fill" data-value="85"></div></div>
+        <a href="https://www.figma.com" class="skill-proof" target="_blank" rel="noopener noreferrer">🔗 Figma Profile</a>
+      </article>
+
+      <article class="glass skill-card reveal">
+        <div class="skill-head">
+          <div class="skill-icon" style="background:rgba(6,182,212,.15)">🌈</div>
+          <div>
+            <div class="skill-name">HCI Principles</div>
+            <div class="skill-level">Strong · 2 yrs</div>
+          </div>
+        </div>
+        <div class="stat-bar"><div class="stat-bar-fill" data-value="82"></div></div>
+        <a href="https://github.com/ShieAsh" class="skill-proof" target="_blank" rel="noopener noreferrer">🔗 Design Reviews</a>
+      </article>
+
+      <article class="glass skill-card reveal">
+        <div class="skill-head">
+          <div class="skill-icon" style="background:rgba(16,185,129,.15)">✏️</div>
+          <div>
+            <div class="skill-name">Prototyping / Wireframing</div>
+            <div class="skill-level">Advanced · 3 yrs</div>
+          </div>
+        </div>
+        <div class="stat-bar"><div class="stat-bar-fill" data-value="88"></div></div>
+        <a href="https://github.com/ShieAsh" class="skill-proof" target="_blank" rel="noopener noreferrer">🔗 UX Case Studies</a>
+      </article>
+    </div>
+
+    <!-- Tools -->
+    <div class="tab-panel" id="tab-tools" role="tabpanel" aria-labelledby="tb-tools">
+      <article class="glass skill-card reveal">
+        <div class="skill-head">
+          <div class="skill-icon" style="background:rgba(124,58,237,.15)">🐙</div>
+          <div>
+            <div class="skill-name">Git / GitHub</div>
+            <div class="skill-level">Expert · 4 yrs</div>
+          </div>
+        </div>
+        <div class="stat-bar"><div class="stat-bar-fill" data-value="95"></div></div>
+        <a href="https://github.com/ShieAsh" class="skill-proof" target="_blank" rel="noopener noreferrer">🔗 GitHub Profile</a>
+      </article>
+
+      <article class="glass skill-card reveal">
+        <div class="skill-head">
+          <div class="skill-icon" style="background:rgba(6,182,212,.15)">🐳</div>
+          <div>
+            <div class="skill-name">Docker / CI/CD</div>
+            <div class="skill-level">Intermediate · 2 yrs</div>
+          </div>
+        </div>
+        <div class="stat-bar"><div class="stat-bar-fill" data-value="70"></div></div>
+        <a href="https://github.com/ShieAsh" class="skill-proof" target="_blank" rel="noopener noreferrer">🔗 Pipeline Configs</a>
+      </article>
+
+      <article class="glass skill-card reveal">
+        <div class="skill-head">
+          <div class="skill-icon" style="background:rgba(245,158,11,.15)">☁️</div>
+          <div>
+            <div class="skill-name">Vercel / Netlify / GitHub Pages</div>
+            <div class="skill-level">Expert · 3 yrs</div>
+          </div>
+        </div>
+        <div class="stat-bar"><div class="stat-bar-fill" data-value="90"></div></div>
+        <a href="https://github.com/ShieAsh" class="skill-proof" target="_blank" rel="noopener noreferrer">🔗 Deployed Sites</a>
+      </article>
+    </div>
+  </section>
+
+  <!-- ─── Goals ───────────────────────────────────────── -->
+  <section id="goals" aria-labelledby="goals-heading">
+    <p class="section-label reveal">Where I'm Heading</p>
+    <h2 class="section-title reveal" id="goals-heading">User's Goals</h2>
+
+    <div class="goals-grid">
+
+      <article class="glass goal-card g1 reveal">
+        <div class="goal-emoji">🚀</div>
+        <div class="goal-title">Launch a SaaS Product</div>
+        <div class="goal-desc">Build and ship an independent software product — from zero to first 100 paying users. Currently in the validation phase with a waitlist.</div>
+        <div class="goal-progress">
+          <div class="goal-bar"><div class="goal-bar-fill" data-value="40"></div></div>
+          <span>40%</span>
+        </div>
+      </article>
+
+      <article class="glass goal-card g2 reveal">
+        <div class="goal-emoji">🎓</div>
+        <div class="goal-title">Earn a Cloud Certification</div>
+        <div class="goal-desc">Complete the AWS Solutions Architect Associate certification by mid-2025 to formalise cloud architecture knowledge gained through project work.</div>
+        <div class="goal-progress">
+          <div class="goal-bar"><div class="goal-bar-fill" data-value="65"></div></div>
+          <span>65%</span>
+        </div>
+      </article>
+
+      <article class="glass goal-card g3 reveal">
+        <div class="goal-emoji">🌍</div>
+        <div class="goal-title">Contribute to 5 OSS Projects</div>
+        <div class="goal-desc">Meaningful, merged pull requests into 5 different open-source repositories — not just typo fixes, but feature-level contributions.</div>
+        <div class="goal-progress">
+          <div class="goal-bar"><div class="goal-bar-fill" data-value="60"></div></div>
+          <span>3 / 5</span>
+        </div>
+      </article>
+
+      <article class="glass goal-card g4 reveal">
+        <div class="goal-emoji">✍️</div>
+        <div class="goal-title">Publish Technical Writing</div>
+        <div class="goal-desc">Write and publish 12 in-depth technical articles (one per month) covering web performance, accessibility, and HCI patterns.</div>
+        <div class="goal-progress">
+          <div class="goal-bar"><div class="goal-bar-fill" data-value="50"></div></div>
+          <span>6 / 12</span>
+        </div>
+      </article>
+
+    </div>
+  </section>
+
+  <!-- ─── Experience (2024-2026) ──────────────────────── -->
+  <section id="experience" aria-labelledby="experience-heading">
+    <p class="section-label reveal">The Journey</p>
+    <h2 class="section-title reveal" id="experience-heading">Experiences · 2024 – 2026</h2>
+
+    <div class="timeline" role="list" aria-label="Experience timeline 2024 to 2026">
+
+      <div class="tl-item" role="listitem">
+        <div class="tl-dot active" aria-hidden="true"></div>
+        <article class="glass tl-card">
+          <div class="tl-meta">
+            <span class="tl-date">Jan 2024</span>
+            <span class="tl-tag">Freelance</span>
+          </div>
+          <h3 class="tl-title">Launched First Freelance Project</h3>
+          <p class="tl-desc">Delivered a full-stack e-commerce dashboard for a local SME, handling auth, inventory, and analytics. First production app with real users (&gt;200 monthly active).</p>
+          <a href="https://github.com/ShieAsh" class="tl-proof" target="_blank" rel="noopener noreferrer">📁 Case Study</a>
+        </article>
+      </div>
+
+      <div class="tl-item" role="listitem">
+        <div class="tl-dot" aria-hidden="true"></div>
+        <article class="glass tl-card">
+          <div class="tl-meta">
+            <span class="tl-date">Apr 2024</span>
+            <span class="tl-tag">Open Source</span>
+          </div>
+          <h3 class="tl-title">First Merged OSS Contribution</h3>
+          <p class="tl-desc">Contributed an accessibility improvement (keyboard-navigation support) to a popular React component library with 12K+ GitHub stars. PR reviewed and merged within 48 hours.</p>
+          <a href="https://github.com/ShieAsh" class="tl-proof" target="_blank" rel="noopener noreferrer">🔗 Pull Request</a>
+        </article>
+      </div>
+
+      <div class="tl-item" role="listitem">
+        <div class="tl-dot" aria-hidden="true"></div>
+        <article class="glass tl-card">
+          <div class="tl-meta">
+            <span class="tl-date">Jul 2024</span>
+            <span class="tl-tag">Internship</span>
+          </div>
+          <h3 class="tl-title">Frontend Engineering Intern</h3>
+          <p class="tl-desc">Joined a fintech startup as a frontend intern. Owned the redesign of the onboarding flow, reducing drop-off rate by 23% through HCI-informed micro-interactions and clearer copy.</p>
+          <a href="https://github.com/ShieAsh" class="tl-proof" target="_blank" rel="noopener noreferrer">📊 Results Deck</a>
+        </article>
+      </div>
+
+      <div class="tl-item" role="listitem">
+        <div class="tl-dot" aria-hidden="true"></div>
+        <article class="glass tl-card">
+          <div class="tl-meta">
+            <span class="tl-date">Oct 2024</span>
+            <span class="tl-tag">Hackathon</span>
+          </div>
+          <h3 class="tl-title">🏆 1st Place — National Hackathon</h3>
+          <p class="tl-desc">Led a 4-person team to victory at a 36-hour national hackathon. Built an AI-powered accessibility auditing tool for web apps. Judged on innovation, usability, and social impact.</p>
+          <a href="https://github.com/ShieAsh" class="tl-proof" target="_blank" rel="noopener noreferrer">🏅 Certificate</a>
+        </article>
+      </div>
+
+      <div class="tl-item" role="listitem">
+        <div class="tl-dot" aria-hidden="true"></div>
+        <article class="glass tl-card">
+          <div class="tl-meta">
+            <span class="tl-date">Jan 2025</span>
+            <span class="tl-tag">Full-Time Role</span>
+          </div>
+          <h3 class="tl-title">Junior Full-Stack Developer</h3>
+          <p class="tl-desc">Joined an EdTech company full-time. Working across React + Node stack, delivering new student-facing features. Mentoring two junior developers as part of internal knowledge-sharing sessions.</p>
+          <a href="https://github.com/ShieAsh" class="tl-proof" target="_blank" rel="noopener noreferrer">💼 LinkedIn</a>
+        </article>
+      </div>
+
+      <div class="tl-item" role="listitem">
+        <div class="tl-dot" aria-hidden="true"></div>
+        <article class="glass tl-card">
+          <div class="tl-meta">
+            <span class="tl-date">May 2025</span>
+            <span class="tl-tag">Certification</span>
+          </div>
+          <h3 class="tl-title">AWS Cloud Practitioner Certified</h3>
+          <p class="tl-desc">Passed the AWS Certified Cloud Practitioner exam on the first attempt (score: 873/1000). Laying the foundation for the Solutions Architect Associate certification.</p>
+          <a href="https://github.com/ShieAsh" class="tl-proof" target="_blank" rel="noopener noreferrer">📜 Credential</a>
+        </article>
+      </div>
+
+      <div class="tl-item" role="listitem">
+        <div class="tl-dot" aria-hidden="true"></div>
+        <article class="glass tl-card">
+          <div class="tl-meta">
+            <span class="tl-date">Sep 2025</span>
+            <span class="tl-tag">Side Project</span>
+          </div>
+          <h3 class="tl-title">SaaS MVP in Public</h3>
+          <p class="tl-desc">Shipped the MVP of a developer productivity tool — a visual Git history explorer. Published build-in-public blog series documenting architecture decisions, HCI choices, and early user feedback.</p>
+          <a href="https://github.com/ShieAsh" class="tl-proof" target="_blank" rel="noopener noreferrer">🚀 Product</a>
+        </article>
+      </div>
+
+      <div class="tl-item" role="listitem">
+        <div class="tl-dot" aria-hidden="true"></div>
+        <article class="glass tl-card">
+          <div class="tl-meta">
+            <span class="tl-date">2026 — Ongoing</span>
+            <span class="tl-tag">Current</span>
+          </div>
+          <h3 class="tl-title">Senior Developer &amp; Tech Lead</h3>
+          <p class="tl-desc">Promoted to lead the frontend chapter at current company. Driving a company-wide design-system adoption, mentoring a team of 5, and advocating for accessibility-first engineering culture.</p>
+          <a href="https://github.com/ShieAsh" class="tl-proof" target="_blank" rel="noopener noreferrer">📂 Portfolio</a>
+        </article>
+      </div>
+
+    </div>
+  </section>
+
+  <!-- ─── Contact ──────────────────────────────────────── -->
+  <section id="contact" aria-labelledby="contact-heading">
+    <p class="section-label reveal">Let's Connect</p>
+    <h2 class="section-title reveal" id="contact-heading">Get In Touch</h2>
+    <p class="reveal" style="color:var(--text-muted); max-width:480px; margin: 0 auto 8px; text-align:center; font-size:.95rem;">
+      Open to collaborations, freelance work, and interesting conversations about tech and design.
+    </p>
+
+    <div class="contact-links reveal">
+      <a href="https://github.com/ShieAsh" class="contact-btn" target="_blank" rel="noopener noreferrer" aria-label="GitHub">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M12 .297c-6.63 0-12 5.373-12 12 0 5.303 3.438 9.8 8.205 11.385.6.113.82-.258.82-.577 0-.285-.01-1.04-.015-2.04-3.338.724-4.042-1.61-4.042-1.61C4.422 18.07 3.633 17.7 3.633 17.7c-1.087-.744.084-.729.084-.729 1.205.084 1.838 1.236 1.838 1.236 1.07 1.835 2.809 1.305 3.495.998.108-.776.417-1.305.76-1.605-2.665-.3-5.466-1.332-5.466-5.93 0-1.31.465-2.38 1.235-3.22-.135-.303-.54-1.523.105-3.176 0 0 1.005-.322 3.3 1.23.96-.267 1.98-.399 3-.405 1.02.006 2.04.138 3 .405 2.28-1.552 3.285-1.23 3.285-1.23.645 1.653.24 2.873.12 3.176.765.84 1.23 1.91 1.23 3.22 0 4.61-2.805 5.625-5.475 5.92.42.36.81 1.096.81 2.22 0 1.606-.015 2.896-.015 3.286 0 .315.21.69.825.57C20.565 22.092 24 17.592 24 12.297c0-6.627-5.373-12-12-12"/></svg>
+        GitHub
+      </a>
+      <a href="https://www.linkedin.com" class="contact-btn" target="_blank" rel="noopener noreferrer" aria-label="LinkedIn">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M20.447 20.452h-3.554v-5.569c0-1.328-.027-3.037-1.852-3.037-1.853 0-2.136 1.445-2.136 2.939v5.667H9.351V9h3.414v1.561h.046c.477-.9 1.637-1.85 3.37-1.85 3.601 0 4.267 2.37 4.267 5.455v6.286zM5.337 7.433a2.062 2.062 0 0 1-2.063-2.065 2.064 2.064 0 1 1 2.063 2.065zm1.782 13.019H3.555V9h3.564v11.452zM22.225 0H1.771C.792 0 0 .774 0 1.729v20.542C0 23.227.792 24 1.771 24h20.451C23.2 24 24 23.227 24 22.271V1.729C24 .774 23.2 0 22.222 0h.003z"/></svg>
+        LinkedIn
+      </a>
+      <a href="mailto:shieash@example.com" class="contact-btn" aria-label="Email ShieAsh">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="2" y="4" width="20" height="16" rx="2"/><polyline points="2,4 12,13 22,4"/></svg>
+        Email
+      </a>
+      <a href="https://github.com/JJB-AR/ShieAsh.github.io" class="contact-btn" target="_blank" rel="noopener noreferrer" aria-label="Portfolio source">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="16 18 22 12 16 6"/><polyline points="8 6 2 12 8 18"/></svg>
+        Source
+      </a>
+    </div>
+  </section>
+
+  <footer>
+    <p>Designed &amp; built by <strong>ShieAsh</strong> · 2024–2026 &nbsp;·&nbsp; Made with ❤️ and HCI principles</p>
+  </footer>
+
+</div><!-- /page-wrap -->
+
+<script>
+  /* ─── Particle Canvas ──────────────────────────────── */
+  (function () {
+    const canvas = document.getElementById('bg-canvas');
+    const ctx = canvas.getContext('2d');
+    let W, H, particles = [];
+
+    function resize() {
+      W = canvas.width  = window.innerWidth;
+      H = canvas.height = window.innerHeight;
+    }
+    let resizeTimer;
+    window.addEventListener('resize', () => {
+      clearTimeout(resizeTimer);
+      resizeTimer = setTimeout(resize, 150);
+    });
+    resize();
+
+    function randomBetween(a, b) { return a + Math.random() * (b - a); }
+
+    class Particle {
+      constructor() { this.reset(); }
+      reset() {
+        this.x  = randomBetween(0, W);
+        this.y  = randomBetween(0, H);
+        this.vx = randomBetween(-0.3, 0.3);
+        this.vy = randomBetween(-0.3, 0.3);
+        this.r  = randomBetween(1, 2.5);
+        this.alpha = randomBetween(0.1, 0.45);
+        const hues = [260, 190, 42];
+        this.hue = hues[Math.floor(Math.random() * hues.length)];
+      }
+      update() {
+        this.x += this.vx;
+        this.y += this.vy;
+        if (this.x < 0 || this.x > W || this.y < 0 || this.y > H) this.reset();
+      }
+      draw() {
+        ctx.beginPath();
+        ctx.arc(this.x, this.y, this.r, 0, Math.PI * 2);
+        ctx.fillStyle = `hsla(${this.hue},80%,65%,${this.alpha})`;
+        ctx.fill();
+      }
+    }
+
+    for (let i = 0; i < 60; i++) particles.push(new Particle());
+
+    function connect() {
+      for (let i = 0; i < particles.length; i++) {
+        for (let j = i + 1; j < particles.length; j++) {
+          const dx = particles[i].x - particles[j].x;
+          const dy = particles[i].y - particles[j].y;
+          const dist = Math.sqrt(dx * dx + dy * dy);
+          if (dist < 120) {
+            ctx.strokeStyle = `rgba(124,58,237,${0.06 * (1 - dist / 120)})`;
+            ctx.lineWidth = 1;
+            ctx.beginPath();
+            ctx.moveTo(particles[i].x, particles[i].y);
+            ctx.lineTo(particles[j].x, particles[j].y);
+            ctx.stroke();
+          }
+        }
+      }
+    }
+
+    function loop() {
+      ctx.clearRect(0, 0, W, H);
+      particles.forEach(p => { p.update(); p.draw(); });
+      connect();
+      requestAnimationFrame(loop);
+    }
+    loop();
+  })();
+
+  /* ─── Cursor Glow ──────────────────────────────────── */
+  (function () {
+    const glow = document.getElementById('cursor-glow');
+    document.addEventListener('mousemove', e => {
+      glow.style.left = e.clientX + 'px';
+      glow.style.top  = e.clientY + 'px';
+    });
+  })();
+
+  /* ─── Scroll Reveal ────────────────────────────────── */
+  (function () {
+    const revealEls = document.querySelectorAll('.reveal, .tl-item');
+    const obs = new IntersectionObserver(entries => {
+      entries.forEach(entry => {
+        if (entry.isIntersecting) {
+          entry.target.classList.add('visible');
+          /* Animate progress bars when visible */
+          entry.target.querySelectorAll('.stat-bar-fill, .goal-bar-fill').forEach(bar => {
+            bar.style.width = bar.dataset.value + '%';
+          });
+          obs.unobserve(entry.target);
+        }
+      });
+    }, { threshold: 0.15 });
+    revealEls.forEach(el => obs.observe(el));
+
+    /* Also trigger bars that are already in viewport on load */
+    document.querySelectorAll('.stat-bar-fill, .goal-bar-fill').forEach(bar => {
+      if (bar.closest('.visible')) bar.style.width = bar.dataset.value + '%';
+    });
+  })();
+
+  /* ─── Skill Tabs ────────────────────────────────────── */
+  function switchTab(id) {
+    document.querySelectorAll('.tab-btn').forEach(b => {
+      b.classList.remove('active');
+      b.setAttribute('aria-selected', 'false');
+    });
+    document.querySelectorAll('.tab-panel').forEach(p => p.classList.remove('active'));
+
+    const btn   = document.getElementById('tb-' + id);
+    const panel = document.getElementById('tab-' + id);
+    btn.classList.add('active');
+    btn.setAttribute('aria-selected', 'true');
+    panel.classList.add('active');
+
+    /* Trigger bar animations for newly visible cards */
+    panel.querySelectorAll('.stat-bar-fill').forEach(bar => {
+      bar.style.width = '0';
+      requestAnimationFrame(() => {
+        requestAnimationFrame(() => { bar.style.width = bar.dataset.value + '%'; });
+      });
+    });
+  }
+</script>
+
+</body>
+</html>
